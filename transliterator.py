@@ -28,12 +28,10 @@ class Transliterate():
                     if char in self._translit_table:
                         transchar = self._translit_table[char]
                     elif char in self._chars_with_rules:
-                        #import pdb;pdb.set_trace()
                         transchar = self._check_rules(word, char, char_index)
                     else:
                         transchar = char
 
-                    #import pdb;pdb.set_trace()
                     converted_word += transchar
                 converted_sentence.append(converted_word)
             new_sentences.append(' '.join(converted_sentence))
@@ -60,8 +58,9 @@ class Transliterate():
             return self._rules_for_soft(word, char, char_index)
 
     def _rules_for_soft(self, word, char, char_index):
-        if word == 'Юрьевец':
-            import pdb;pdb.set_trace()
+        """Checks rules for the cyr softening character
+            Returns: [string] -- Returns 'J/j//' based on the rules
+        """
         if len(word[char_index+1:]) > 0 and word[char_index+1] not in 'еЕёЁюЮяЯ' and word[char_index+1] in self._vocals_rus:
             char_to_return = self._check_if_upper_and_return(char, 'J')
         else:
@@ -114,17 +113,19 @@ class Transliterate():
         """Checks rules for the cyr character 'h'
         Returns: [string] -- Returns 'Hh/hh/H/h' based on the rules
         """
-        # if word == 'Мономах':
-        #     import pdb;pdb.set_trace()
         char_to_return = ''
         if char_index > 0:
             if word[char_index-1] in self._vocals_rus:
                 if len(word) == 2:
-                    char_to_return = self._check_if_upper_and_return(char, 'Hh')
-                elif len(word[char_index+1:]) > 0 and word[char_index+1] in self._vocals_rus: # To avoid keyerror use len(word[char_index+1:])
-                    char_to_return = self._check_if_upper_and_return(char, 'Hh')
+                    char_to_return = self._check_if_upper_and_return(
+                        char, 'Hh')
+                # To avoid keyerror use len(word[char_index+1:])
+                elif len(word[char_index+1:]) > 0 and word[char_index+1] in self._vocals_rus:
+                    char_to_return = self._check_if_upper_and_return(
+                        char, 'Hh')
                 elif word[-1] == char:
-                    char_to_return = self._check_if_upper_and_return(char, 'Hh')
+                    char_to_return = self._check_if_upper_and_return(
+                        char, 'Hh')
 
         if char_to_return == '':
             char_to_return = self._chars_with_rules[char]
@@ -185,22 +186,23 @@ class Transliterate():
         'Ю': 'Ju', 'ю': 'ju',
         'Я': 'Ja', 'я': 'ja'}
     _chars_with_rules = {
-    'Е': 'E', 'е': 'e',
-    'Ё': 'Jo', 'ё': 'jo',
-    'И': 'I', 'и': 'i',
-    'Й': 'I', 'й': 'i',
-    'Х': 'H', 'х':  'h',
-    'Ь': "", 'ь': "",
+        'Е': 'E', 'е': 'e',
+        'Ё': 'Jo', 'ё': 'jo',
+        'И': 'I', 'и': 'i',
+        'Й': 'I', 'й': 'i',
+        'Х': 'H', 'х':  'h',
+        'Ь': "", 'ь': "",
     }
+
 
 if __name__ == '__main__':
     trans = Transliterate()
     transcribed = trans(['Дженни играет с мяц.', 'Яне говорит на телефоне.',
-                 'Рассекречены планы выпуска дешевого iPhone Читать далее',
-                 'FOR E: Сергей = Sergei, Петропавловск = Petropavlovsk; aga Егоров = Jegorov, Алексеев = Aleksejev, Мясоедов = Mjassojedov, Васильев = Vassiljev, Подъездов = Podjezdov',
-                 'FOR JO: Орёл = Orjol, Пётр = Pjotr; aga Жёлтый = Žoltõi, Пугачёв = Pugatšov, Шёлков = Šolkov, Щёкино = Štšokino',
-                 'FOR I: Исаев = Issajev, Филин =Filin; aga Иосиф = Jossif, Иовлев = Jovlev',
-                 'FOR H: Хабаровск = Habarovsk, Мохнатый = Mohnatõi, Верхоянск = Verhojansk; aga Чехов = Tšehhov, Тихонов = Tihhonov, Мономах = Mono­mahh, Черных = Tšernõhh, Долгих = Dolgihh',
-                 'FOR SOFT: Юрьевец = Jurjevets, Тотьма = Totma, Нинель = Ninel, aga Ильич = Iljitš, Почтальон = Potštaljon, also Иль'])
+                         'Рассекречены планы выпуска дешевого iPhone Читать далее',
+                         'FOR E: Сергей = Sergei, Петропавловск = Petropavlovsk; aga Егоров = Jegorov, Алексеев = Aleksejev, Мясоедов = Mjassojedov, Васильев = Vassiljev, Подъездов = Podjezdov',
+                         'FOR JO: Орёл = Orjol, Пётр = Pjotr; aga Жёлтый = Žoltõi, Пугачёв = Pugatšov, Шёлков = Šolkov, Щёкино = Štšokino',
+                         'FOR I: Исаев = Issajev, Филин =Filin; aga Иосиф = Jossif, Иовлев = Jovlev',
+                         'FOR H: Хабаровск = Habarovsk, Мохнатый = Mohnatõi, Верхоянск = Verhojansk; aga Чехов = Tšehhov, Тихонов = Tihhonov, Мономах = Mono­mahh, Черных = Tšernõhh, Долгих = Dolgihh',
+                         'FOR SOFT: Юрьевец = Jurjevets, Тотьма = Totma, Нинель = Ninel, aga Ильич = Iljitš, Почтальон = Potštaljon, also Иль'])
     for i in transcribed:
         print(i)
