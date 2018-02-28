@@ -1,5 +1,6 @@
 from re import finditer, sub
 
+
 class Transliterate():
     """
     Transliterate class to transliterate text from Cyrillic to Latin
@@ -19,6 +20,14 @@ class Transliterate():
         return self._transliterate(sentences)
 
     def _transliterate(self, sentences):
+        """The main transliteration processor
+
+        Arguments:
+            sentences {list of strings} -- A list of string sentences to tranliterate
+
+        Returns:
+            [list of strings] -- A transliterated version of the output sentences
+        """
         new_sentences = []
         for sentence in sentences:
             converted_sentence = []
@@ -31,7 +40,8 @@ class Transliterate():
                     if char in self._translit_table:
                         transchar = self._translit_table[char]
                     elif char in self._chars_with_rules:
-                        transchar = self._check_char_rules(word, char, char_index)
+                        transchar = self._check_char_rules(
+                            word, char, char_index)
                     else:
                         transchar = char
 
@@ -42,21 +52,24 @@ class Transliterate():
         return new_sentences
 
     def _check_doublechar_rules(self, word):
+        """Checks for doublechar rules, currently only for the cyr characters ij
+
+        Arguments:
+            word {string} -- The word in which to check the rule in
+
+        Returns:
+            [string] -- The modified version of the input word relative to the rules, if no rules were found, returns the unchanged input word.
+        """
         word_to_return = word
         if len(word) > 3:
             for match in finditer("ий", word.lower()):
-                # if word == 'Чайковский':
-                #     import pdb; pdb.set_trace()
                 if match.span()[1] - 1 == len(word) - 1:
-                    #import pdb; pdb.set_trace()
-                    new_char = self._check_if_upper_and_return(word[match.span()[0]], 'I')
+                    new_char = self._check_if_upper_and_return(
+                        word[match.span()[0]], 'I')
                     word_to_return = list(word_to_return[:match.span()[0] + 1])
                     word_to_return[-1] = new_char
                     word_to_return = ''.join(word_to_return)
-                    #import pdb; pdb.set_trace()
-                # print(len(word), word.index(word[-1]), match.span(), match.group())
-                # print(word[match.span()[0]:match.span()[1]])
-                # print(match.span()[1] - 1 == word.index(word[-1]))
+
         return word_to_return
 
     def _check_char_rules(self, word, char, char_index):
@@ -203,12 +216,8 @@ class Transliterate():
         'В': 'V', 'в': 'v',
         'Г': 'G', 'г': 'g',
         'Д': 'D', 'д': 'd',
-        #'Е': 'E', 'е': 'e',
-        #'Ё': 'Jo', 'ё': 'jo',
         'Ж': 'Ž', 'ж':  'ž',
         'З': 'Z', 'з': 'z',
-        #'И': 'I', 'и': 'i',
-        #'Й': 'J', 'й': 'j',
         'К': 'K', 'к': 'k',
         'Л': 'L', 'л': 'l',
         'М': 'M', 'м': 'm',
@@ -216,16 +225,13 @@ class Transliterate():
         'О': 'O', 'о': 'o',
         'П': 'P', 'п': 'p',
         'Р': 'R', 'р': 'r',
-        #'С': 'S', 'с': 's',
         'Т': 'T', 'т': 't',
         'У': 'U', 'у': 'u',
         'Ф': 'F', 'ф': 'f',
-        #'Х': 'Kh', 'х':  'kh',
         'Ц': 'Ts', 'ц':  'ts',
         'Ч': 'Tš', 'ч':  'tš',
         'Ш': 'Š', 'ш':  'š',
         'Щ': 'Štš', 'щ': 'štš',
-        #'Ь': "'", 'ь': "'",
         'Ы': 'õ', 'ы': 'õ',
         'Ъ': "", 'ъ': "",
         'Э': 'E', 'э': 'e',
